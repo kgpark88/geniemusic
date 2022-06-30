@@ -1,5 +1,5 @@
 # 리뷰 분석 서비스 개발  
-### 참고자료  
+### 추천도서  
 o 파이썬 텍스트 마이닝 완벽 가이드   
 - https://wikibook.co.kr/textmining/  
 - GitHub 저장소: https://github.com/wikibook/textmining   
