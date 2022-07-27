@@ -15,7 +15,10 @@ git clone https://github.com/kgpark88/review_analysis
 ## 3. 파이썬 가상환경 생성 및 실행
 - cd review_analysis  
 - python –m venv venv 
-- venv\Scripts\activate  (windows)      source venv/bin/activate  (Linux, macOS) 
+-#### Windows
+- venv\Scripts\activate     
+#### Linux, macOS
+- source venv/bin/activate
 
 ## 4. 파이썬 패키지 설치
 - pip install django
