@@ -14,8 +14,8 @@ git clone https://github.com/kgpark88/review_analysis
  
 ## 3. 파이썬 가상환경 생성 및 실행
 - cd review_analysis  
-- python –m venv venv 
--#### Windows
+- python –m venv venv   
+#### Windows
 - venv\Scripts\activate     
 #### Linux, macOS
 - source venv/bin/activate
