@@ -1,0 +1,33 @@
+pip install django
+pip install pandas
+pip install matplotlib
+pip install seaborn
+pip install django-crispy-forms
+pip install django-import-export
+pip install django-cors-headers
+pip install djangorestframework
+pip install django-rest-swagger
+pip install drf-yasg
+pip install git+https://github.com/haven-jeon/PyKoSpacing.git
+pip install git+https://github.com/ssut/py-hanspell.git
+pip install tensorflow
+pip install tensorflow_hub
+
+
+=================================================================================================================
+
+
+pip install --trusted-host pypi.org --trusted-host pypi.python.org --trusted-host files.pythonhosted.org django
+pip install --trusted-host pypi.org --trusted-host pypi.python.org --trusted-host files.pythonhosted.org pandas
+pip install --trusted-host pypi.org --trusted-host pypi.python.org --trusted-host files.pythonhosted.org matplotlib
+pip install --trusted-host pypi.org --trusted-host pypi.python.org --trusted-host files.pythonhosted.org seaborn
+pip install --trusted-host pypi.org --trusted-host pypi.python.org --trusted-host files.pythonhosted.org django-crispy-forms
+pip install --trusted-host pypi.org --trusted-host pypi.python.org --trusted-host files.pythonhosted.org django-import-export
+pip install --trusted-host pypi.org --trusted-host pypi.python.org --trusted-host files.pythonhosted.org django-cors-headers
+pip install --trusted-host pypi.org --trusted-host pypi.python.org --trusted-host files.pythonhosted.org djangorestframework
+pip install --trusted-host pypi.org --trusted-host pypi.python.org --trusted-host files.pythonhosted.org django-rest-swagger
+pip install --trusted-host pypi.org --trusted-host pypi.python.org --trusted-host files.pythonhosted.org drf-yasg
+pip install --trusted-host pypi.org --trusted-host pypi.python.org --trusted-host files.pythonhosted.org git+https://github.com/haven-jeon/PyKoSpacing.git
+pip install --trusted-host pypi.org --trusted-host pypi.python.org --trusted-host files.pythonhosted.org git+https://github.com/ssut/py-hanspell.git
+pip install --trusted-host pypi.org --trusted-host pypi.python.org --trusted-host files.pythonhosted.org tensorflow
+pip install --trusted-host pypi.org --trusted-host pypi.python.org --trusted-host files.pythonhosted.org tensorflow_hub
