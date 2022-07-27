@@ -40,6 +40,29 @@ git clone https://github.com/kgpark88/review_analysis
 - pip install google_play_scraper
 - pip install app-store-scraper
 
+#### pip SSL 오류가 날때 파이썬 패키지 설치방법
+- pip install --trusted-host pypi.org --trusted-host pypi.python.org --trusted-host files.pythonhosted.org install django
+- pip install --trusted-host pypi.org --trusted-host pypi.python.org --trusted-host files.pythonhosted.org install pandas
+- pip install --trusted-host pypi.org --trusted-host pypi.python.org --trusted-host files.pythonhosted.org install matplotlib
+- pip install --trusted-host pypi.org --trusted-host pypi.python.org --trusted-host files.pythonhosted.org install seaborn
+- pip install --trusted-host pypi.org --trusted-host pypi.python.org --trusted-host files.pythonhosted.org install django-crispy-forms
+- pip install --trusted-host pypi.org --trusted-host pypi.python.org --trusted-host files.pythonhosted.org install django-import-export
+- pip install --trusted-host pypi.org --trusted-host pypi.python.org --trusted-host files.pythonhosted.org install django-cors-headers
+- pip install --trusted-host pypi.org --trusted-host pypi.python.org --trusted-host files.pythonhosted.org install djangorestframework
+- pip install --trusted-host pypi.org --trusted-host pypi.python.org --trusted-host files.pythonhosted.org install django-rest-swagger
+- pip install --trusted-host pypi.org --trusted-host pypi.python.org --trusted-host files.pythonhosted.org install drf-yasg
+- pip install --trusted-host pypi.org --trusted-host pypi.python.org --trusted-host files.pythonhosted.org install django-markdownx
+- pip install JPype1-1.4.0-cp38-cp38-win_amd64.whl
+- pip install --trusted-host pypi.org --trusted-host pypi.python.org --trusted-host files.pythonhosted.org install sklearn
+- pip install --trusted-host pypi.org --trusted-host pypi.python.org --trusted-host files.pythonhosted.org install konlpy
+- pip install --trusted-host pypi.org --trusted-host pypi.python.org --trusted-host files.pythonhosted.org install git+https://github.com/haven-jeon/PyKoSpacing.git
+- pip install --trusted-host pypi.org --trusted-host pypi.python.org --trusted-host files.pythonhosted.org install git+https://github.com/ssut/py-hanspell.git
+- pip install --trusted-host pypi.org --trusted-host pypi.python.org --trusted-host files.pythonhosted.org install tensorflow
+- pip install --trusted-host pypi.org --trusted-host pypi.python.org --trusted-host files.pythonhosted.org install tensorflow_hub
+- pip install --trusted-host pypi.org --trusted-host pypi.python.org --trusted-host files.pythonhosted.org install jupyter
+- pip install --trusted-host pypi.org --trusted-host pypi.python.org --trusted-host files.pythonhosted.org install google_play_scraper
+- pip install --trusted-host pypi.org --trusted-host pypi.python.org --trusted-host files.pythonhosted.org install app-store-scraper
+
 ## 5. 테이블 생성
 - cd server
 - python manage.py makemigrations review
