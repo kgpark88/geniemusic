@@ -23,8 +23,8 @@ db.sqlite3-journal
 
 # Distribution / packaging
 .Python
-server/logs/
-server/media/
+logs/
+media/
 build/
 develop-eggs/
 dist/
@@ -150,8 +150,8 @@ dmypy.json
 .prof
 
 .DS_Store
-frontend/node_modules
-frontend//dist
+node_modules
+dist
 
 
 # local env files
