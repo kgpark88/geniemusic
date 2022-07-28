@@ -6,7 +6,7 @@ o 파이썬 텍스트 마이닝 완벽 가이드
 - ZIP 형식으로 다운로드: https://github.com/wikibook/textmining/archive/refs/heads/main.zip  
 
 # 설치 방법
-# 1. Git 프로그램 설치 
+## 1. Git 프로그램 설치 
 - https://git-scm.com/downloads  
 
 ## 2. 소스 설치
