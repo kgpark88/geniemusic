@@ -11,8 +11,12 @@ o 파이썬 텍스트 마이닝 완벽 가이드
 
 ## 2. 소스 설치
 git clone https://github.com/kgpark88/review_analysis 
- 
-## 3. 파이썬 가상환경 생성 및 실행
+
+## 3.JAVA 설치
+- https://github.com/ojdkbuild/ojdkbuild
+- 설치참조 : https://velog.io/@nsunny0908/JAVA-OpenJDK-1.8-%EC%84%A4%EC%B9%98
+
+## 4. 파이썬 가상환경 생성 및 실행
 - cd review_analysis  
 - python –m venv venv   
 #### Windows
@@ -20,7 +24,7 @@ git clone https://github.com/kgpark88/review_analysis
 #### Linux, macOS
 - source venv/bin/activate
 
-## 4. 파이썬 패키지 설치
+## 5. 파이썬 패키지 설치
 - pip install django
 - pip install pandas
 - pip install matplotlib
@@ -66,19 +70,19 @@ git clone https://github.com/kgpark88/review_analysis
 - pip install --trusted-host pypi.org --trusted-host pypi.python.org --trusted-host files.pythonhosted.org install google_play_scraper
 - pip install --trusted-host pypi.org --trusted-host pypi.python.org --trusted-host files.pythonhosted.org install app-store-scraper
 
-## 5. 테이블 생성
+## 6. 테이블 생성
 - cd server
 - python manage.py makemigrations review
 - python manage.py migrate
 
-## 6. 데이터베이스 관리자 계정 생성
+## 7. 데이터베이스 관리자 계정 생성
 - python manage.py createsuperuser
 
-## 7. 백엔드 실행
+## 8. 백엔드 실행
 - python manage.py runserver
 
-## 8. Javascript 패키지 설치 : review_analysis/frontend/ 디렉토리에서 실행
+## 9. Javascript 패키지 설치 : review_analysis/frontend/ 디렉토리에서 실행
 - npm install
 
-## 9. 프론트엔드 실행
+## 10. 프론트엔드 실행
 - npm run serve
