@@ -81,9 +81,11 @@ git clone https://github.com/kgpark88/review_analysis
 ## 8. 백엔드 실행
 - python manage.py runserver
 ## 9 Node.js 설치 : https://nodejs.org/ko/download/ 
-- node –v npm -v
+- node –v  
+- npm -v 
 
 ## 10. Javascript 패키지 설치 : review_analysis/frontend/ 디렉토리에서 실행
+- npm install -g @vue/cli 
 - npm install
 
 ## 11. 프론트엔드 실행
