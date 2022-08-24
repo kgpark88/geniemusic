@@ -6,15 +6,19 @@
       </v-btn>
 
       <v-btn text to="/data">
-        <v-card-text class="title font-weight-bold">데이터 수집</v-card-text> 
+        <v-card-text class="title font-weight-bold">데이터수집</v-card-text> 
       </v-btn>
 
       <v-btn text to="/search">
-        <v-card-text class="title font-weight-bold">리뷰 분석</v-card-text> 
+        <v-card-text class="title font-weight-bold">리뷰조회</v-card-text> 
       </v-btn>
 
-      <v-btn text to="/analysis">
-        <v-card-text class="title font-weight-bold">리뷰 AI 분석</v-card-text> 
+      <v-btn text to="/review-analysis">
+        <v-card-text class="title font-weight-bold">분석차트</v-card-text> 
+      </v-btn>
+
+      <v-btn text to="/keyword-analysis">
+        <v-card-text class="title font-weight-bold">AI분석</v-card-text> 
       </v-btn>
 
       <v-btn text to="/dashboard">
