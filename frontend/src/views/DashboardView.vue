@@ -1,7 +1,7 @@
 <template>
   <div>
     <v-card class="mx-auto lighten-5 ma-10" outlined max-width="1400px">
-      <v-system-bar height="60" dark color="orange darken-22">
+      <v-system-bar height="60" dark color="#2962FF">
         <v-icon large>mdi-chart-bar-stacked</v-icon>
         <span class="headline">대시보드</span>          
       </v-system-bar>

@@ -24,10 +24,17 @@ const routes = [
     )   
   },
   {
-    path: '/analysis',
-    name: 'analysis',
+    path: '/review-analysis',
+    name: 'review-analysis',
     component: () => import(
-      `@/views/AnalysisView.vue`
+      `@/views/ReviewAnalysis.vue`
+    )   
+  },
+  {
+    path: '/keyword-analysis',
+    name: 'keyword-analysis',
+    component: () => import(
+      `@/views/KeywordAnalysis.vue`
     )   
   },
   {

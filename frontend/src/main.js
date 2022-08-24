@@ -7,7 +7,7 @@ import VueSweetalert2 from 'vue-sweetalert2';
 import 'sweetalert2/dist/sweetalert2.min.css';
 import ECharts from 'vue-echarts'
 import { use } from 'echarts/core'
-
+import JsonExcel from 'vue-json-excel'
 
 // import ECharts modules manually to reduce bundle size
 import {
@@ -40,11 +40,13 @@ use([
 
 // register globally (or you can do it locally)
 Vue.component('v-chart', ECharts)
+Vue.component('downloadExcel', JsonExcel)
 
 Vue.config.productionTip = false
 
 Vue.use(VueMoment)
-Vue.use(VueSweetalert2);
+Vue.use(VueSweetalert2)
+
 
 new Vue({
   vuetify,

@@ -1,0 +1,237 @@
+<template>
+  <v-container class="lighten-5">
+
+    <v-row no-gutters class="ma-6">
+        <v-col cols="12" md="4" lg="4">
+        <v-select
+          v-model="app_name"
+          :items="app_names"
+          menu-props="auto"
+          hide-details
+          class="white"
+          outlined
+          label="앱이름"
+          @change="get_review_rating()"
+        >
+        </v-select>
+      </v-col>  
+      <v-col cols="12" md="2" lg="2">
+        <v-menu
+          ref="menu1"
+          v-model="menu1"
+          :close-on-content-click="false"
+          :return-value.sync="from_dt"
+          transition="scale-transition"
+          offset-y
+        >
+          <template v-slot:activator="{ on }">
+            <v-text-field 
+              v-model="from_dt"
+              readonly
+              v-on="on"
+              hide-details
+              class="white"
+              outlined
+              label="From"                
+            ></v-text-field>
+          </template>
+          <template>
+            <v-row justify="space-around">
+              <v-date-picker 
+                v-model="from_dt" 
+                :first-day-of-week="0"
+                locale="ko-kr"  
+                @input="$refs.menu1.save(from_dt)"
+              >
+              </v-date-picker>
+            </v-row>
+          </template>
+        </v-menu>  
+      </v-col>
+
+      <v-col cols="12" md="2" lg="2">
+        <v-menu
+          ref="menu2"
+          v-model="menu2"
+          :close-on-content-click="false"
+          :return-value.sync="to_dt"
+          transition="scale-transition"
+          offset-y
+        >
+          <template v-slot:activator="{ on }">
+            <v-text-field 
+              v-model="to_dt"
+              readonly
+              v-on="on"
+              hide-details
+              class="white"
+              outlined
+              label="To"                 
+            ></v-text-field>
+          </template>
+          <template>
+            <v-row justify="space-around">
+              <v-date-picker 
+                v-model="to_dt" 
+                :first-day-of-week="0"
+                locale="ko-kr"  
+                @input="$refs.menu2.save(to_dt)"
+              >
+              </v-date-picker>
+            </v-row>
+          </template>
+        </v-menu> 
+      </v-col>
+
+      <v-col cols="12" md="2" lg="2">
+        <v-btn
+          class="ma-2"
+          color="primary"
+          large
+          @click="get_review_rating()"
+        >
+          조회
+        </v-btn>
+      </v-col> 
+    </v-row>
+
+    <v-row no-gutters>
+      <v-col cols="12" sm="6">
+        <v-layout align-center justify-center>
+          <div class="text-h6 font-weight-medium">리뷰 별점</div>
+        </v-layout>
+        <v-card class="ma-2" flat tile>
+          <v-chart :options="rating_chart" autoresize />
+        </v-card>
+      </v-col>   
+
+      <v-col cols="12" sm="6">
+        <v-layout align-center justify-center>
+          <div class="text-h6 font-weight-medium">리뷰 감성 분포</div>
+        </v-layout>
+        <v-card class="ma-2" flat tile>
+          <v-chart :options="pie_chart" autoresize />
+        </v-card>
+      </v-col>    
+    </v-row>
+  </v-container>
+</template>
+
+<script>
+import axios from 'axios'
+import ECharts from '@/components/ECharts.vue'
+import 'echarts/lib/component/title'
+import 'echarts/lib/component/legend'
+import 'echarts/lib/component/legendScroll'
+import 'echarts/lib/component/tooltip'
+import 'echarts/lib/component/toolbox'
+import 'echarts/lib/chart/bar'
+import 'echarts/lib/chart/line'
+import 'echarts/lib/chart/scatter'
+import 'echarts/lib/chart/effectScatter'
+import 'echarts/lib/chart/pie'
+import 'echarts/lib/chart/radar'
+
+export default {
+  components: {
+    'v-chart': ECharts
+  },  
+  data: () => ({ 
+    app_name: '지니뮤직',
+    app_names: ['지니뮤직','멜론','유튜브뮤직'],
+    from_dt: '',
+    to_dt: '',
+    menu1: false,
+    menu2: false,
+    loading: false,
+    rating_avg: 0,
+    rating_chart: null,
+    pie_chart: null,
+  }),
+  created: function () {
+    this.from_dt = this.$moment().set('month', 0).startOf('month').format('YYYY-MM-DD')
+    this.to_dt   = this.$moment().set('month', 11).endOf('month').format('YYYY-MM-DD')    
+    this.get_review_rating()
+  },
+  methods: { 
+    get_review_rating(){
+      let url = process.env.VUE_APP_API_SERVER + '/review/review-rating'
+      let post_data = {
+        app_name: this.app_name,
+        from_dt: this.from_dt, 
+        to_dt: this.to_dt,    
+      }
+      axios.post(url, post_data).then((response) => {
+        this.rating_avg = response.data.rating_avg
+        this.rating_chart = {
+          legend: {},
+          tooltip: {},
+          xAxis: {type: 'value'},
+          yAxis: {
+            type: 'category',
+            data: ['1점', '2점', '3점', '4점', '5점']
+          },
+          series: [
+            {
+              data: response.data.rating,
+              type: 'bar',
+              itemStyle:{
+                color: '#EC407A',
+              },  
+              showBackground: true,
+              backgroundStyle: {
+                color: 'rgba(180, 180, 180, 0.2)'
+              }
+            }
+          ]
+        },
+        this.pie_chart =  {
+          title: [{         
+            text: response.data.total,
+            x: 'center',
+            y: 'center',
+          }],      
+          tooltip: {
+            trigger: 'item',
+            formatter: '{a} <br/>{b} : {c} ({d}%)'
+          },
+          legend: {
+            bottom: '5%',
+            left: 'center'
+          },
+          series: [
+            {
+              name: '',
+              type: 'pie',
+              radius: ['25%', '75%'],
+              avoidLabelOverlap: false,
+              label: {
+                position: 'inner',
+                color: "white",
+                fontSize: 20,
+                formatter: '{d}%'
+              },          
+              data: [
+                {'value': response.data.positive, 'itemStyle': {'color': '#3399FF'}},
+                {'value': response.data.negative, 'itemStyle': {'color': '#FF0066'}}
+              ],
+              itemStyle: {
+                emphasis: {
+                  shadowBlur: 10,
+                  shadowOffsetX: 0,
+                  shadowColor: 'rgba(0, 0, 0, 0.5)'
+                }
+              }
+            }
+          ]
+        }
+      }).catch((error) => {
+        console.log(error)
+      })
+    }
+  }
+}
+
+</script>
+
+

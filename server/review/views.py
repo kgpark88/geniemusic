@@ -4,7 +4,9 @@ import csv
 import json
 import pickle
 import requests
+import numpy as np
 import pandas as pd
+
 from shutil import move
 from datetime import datetime
 from django.core.files.storage import FileSystemStorage
@@ -13,6 +15,9 @@ from collections import Counter
 from sklearn.feature_extraction.text import CountVectorizer
 from sklearn.feature_extraction.text import TfidfTransformer
 from sklearn.linear_model import LogisticRegression
+
+from app_store_scraper import AppStore
+from google_play_scraper import Sort, reviews_all
 
 from django.db.models import Q
 from django.db.models import Avg
@@ -30,8 +35,6 @@ from review.models import Review
 
 media_root = getattr(settings, "MEDIA_ROOT", 'media')
 
-df = pd.read_csv("geniemusic_review.csv", encoding="utf-8")
-df = df.dropna(axis=0)
 stopwords = pd.read_csv("korean_stopwords.txt").values.tolist()
 # load the model from disk
 review_model = pickle.load(open('review_model.sav', 'rb'))
@@ -39,19 +42,53 @@ okt = Okt()
 
 @api_view(['GET', 'POST'])
 # @permission_classes([IsAuthenticated])
+def review_collect_google_appstore(request):
+    app_name = request.data.get('app_name')
+    app = 'com.ktmusic.geniemusic'
+    if app_name == '멜론':
+        app = 'com.iloen.melon'
+    elif app_name == '유튜브뮤직':
+        app = 'com.google.android.apps.youtube.music'
+    reviews = reviews_all(app, sleep_milliseconds=1, lang='ko', country='kr', sort=Sort.NEWEST, filter_score_with=None)
+    for reviews in reviews:
+        review_id = reviews['reviewId']
+        defaults = {
+            'app': app_name,
+            'user_name': reviews['userName'],
+            'content': reviews['content'],
+            'score': reviews['score'],
+            'at': reviews['at'],
+            'source': 'google',
+            'reply_content': reviews['replyContent']        
+        }
+        Review.objects.update_or_create(app=app, review_id=review_id, defaults=defaults)
+
+    return JsonResponse({'info': 'info', 'result' : '데이터 수집 완료'})
+
+
+@api_view(['GET', 'POST'])
+# @permission_classes([IsAuthenticated])
 def list(request):
+    app_name = request.data.get('app_name')
     search_word = request.data.get('search_word', None)
+    print(f'App name : {app_name}, Search word : {search_word}')
     from_dt = request.data.get('from_dt')
     to_dt = request.data.get('to_dt')
-    qs = Review.objects.filter(at__gte=from_dt, at__lte=to_dt,).order_by('-at')
+    qs = Review.objects.filter(app=app_name, at__gte=from_dt, at__lte=to_dt,).order_by('-at')
+    if search_word:
+        qs = Review.objects.filter(app=app_name, at__gte=from_dt, at__lte=to_dt, content__contains=search_word).order_by('-at')
 
     reviews = [] 
     for q in qs:           
         data = {
+            'app': q.app or '',
+            'review_id': q.review_id or '',
+            'user_name': q.user_name or '',
             'content': q.content or '',
             'score': q.score or '',
             'at': q.at or '',
             'source': q.source or '',
+            'reply_content': q.reply_content or '',
         }
         reviews.append(data)
     return JsonResponse({'count': qs.count(), 'reviews': reviews})
@@ -102,7 +139,7 @@ def data_upload(request):
                         w_date = datetime.strptime(row[2], "%Y-%m-%d %H:%M:%S")
                         review = Review(content=row[0], score=row[1], at=w_date, source=row[3])
                         ret = review.save()
-                        print(f'INSERT REVIEW DATA : {row[2]}')
+                        print(f'ADD REVIEW DATA : {row[2]}')
                     except Exception as ex:
                         print(ex)
             qs = Review.objects.all()
@@ -125,20 +162,21 @@ def review_rating(request):
     positive = 0
     negative = 0
 
+    app_name = request.data.get('app_name')
     from_dt = request.data.get('from_dt')
     to_dt = request.data.get('to_dt')
 
-    qs = Review.objects.filter(at__gte=from_dt, at__lte=to_dt)
+    qs = Review.objects.filter(app=app_name, at__gte=from_dt, at__lte=to_dt)
     total = qs.count()
 
-    qs = Review.objects.filter(at__gte=from_dt, at__lte=to_dt).aggregate(Avg('score'))
+    qs = Review.objects.filter(app=app_name, at__gte=from_dt, at__lte=to_dt).aggregate(Avg('score'))
     rating_avg = qs['score__avg'] or 0
 
     for i in range(5):
-        qs = Review.objects.filter(at__gte=from_dt, at__lte=to_dt, score__gte=i, score__lt=i+1)
+        qs = Review.objects.filter(app=app_name, at__gte=from_dt, at__lte=to_dt, score__gte=i, score__lt=i+1)
         rating[i] = qs.count()
 
-    qs = Review.objects.filter(at__gte=from_dt, at__lte=to_dt, score__gte=4)
+    qs = Review.objects.filter(app=app_name, at__gte=from_dt, at__lte=to_dt, score__gte=4)
     positive = qs.count()
     negative = total - positive
 
@@ -156,15 +194,21 @@ def review_rating(request):
 @api_view(['POST'])
 # @permission_classes([IsAuthenticated])
 def review_analysis(request):
+    app_name = request.data.get('app_name')
     from_dt = request.data.get('from_dt')
     to_dt = request.data.get('to_dt')
+    # from_dt = datetime.strptime(from_dt, "%Y-%m-%d").date()
+    # to_dt = datetime.strptime(to_dt, "%Y-%m-%d").date()
+    print(f'FROM : {from_dt}, TO : {to_dt}' )
 
     positive_word = []
     negative_word = []
-    review = Review.objects.filter(at__gte=from_dt, at__lte=to_dt).values_list("content", flat=True)
+    print("[AI 분석] 리뷰 데이터 조회")
+    review = Review.objects.filter(app=app_name, at__gte=from_dt, at__lte=to_dt).values_list("content", flat=True)
     corpus = " ".join(review)
     nouns = okt.nouns(hangul(corpus))
-    df['y'] = df['score'].apply(lambda x: rating_to_label(x))
+    print(f'nouns count : {len(nouns)}')
+
 
     # corpus = " ".join(df['content'].tolist())
     # nouns = okt.nouns(hangul(corpus))
@@ -172,22 +216,21 @@ def review_analysis(request):
     # counter = Counter({x: counter[x] for x in counter if len(x) > 1})
 
     # BoW(Bag of Word) 벡터 생성
+    print("[AI 분석] BoW(Bag of Word) 벡터 생성")
     vect = CountVectorizer(tokenizer = lambda x: text_cleaning(x))
-    bow_vect = vect.fit_transform(df['content'].tolist())
+    bow_vect = vect.fit_transform(review)
     word_list = vect.get_feature_names()
     count_list = bow_vect.toarray().sum(axis=0)
     word_count_dict = dict(zip(word_list, count_list))
     print(f'bow_vect.shape : {bow_vect.shape}')
 
     # Bag of Words 벡터에 대해서 TF-IDF변환 진행
+    print("[AI 분석] Bag of Words 벡터에 대해서 TF-IDF변환 진행")
     tfidf_vectorizer = TfidfTransformer()
     tf_idf_vect = tfidf_vectorizer.fit_transform(bow_vect)
     invert_index_vectorizer = {v: k for k, v in vect.vocabulary_.items()}
-    print(f'tf_idf_vect.shape : {tf_idf_vect.shape}')
-    print(f'tf_idf_vect[0].toarray().shape : {tf_idf_vect[0].toarray().shape}')
-
-    y_pred = review_model.predict(tf_idf_vect)
-    # print(f'y_pred : {y_pred}')
+    print(f'[AI 분석] tf_idf_vect.shape : {tf_idf_vect.shape}')
+    print(f'[AI 분석] tf_idf_vect[0].toarray().shape : {tf_idf_vect[0].toarray().shape}')
 
     coef_pos_index = sorted(((value, index) for index, value in enumerate(review_model.coef_[0])), reverse = True)
     coef_neg_index = sorted(((value, index) for index, value in enumerate(review_model.coef_[0])), reverse = False)
@@ -196,18 +239,22 @@ def review_analysis(request):
     coef_pos_index = sorted(((value, index) for index, value in enumerate(review_model.coef_[0])), reverse = True)
     coef_neg_index = sorted(((value, index) for index, value in enumerate(review_model.coef_[0])), reverse = False)
     invert_index_vectorizer = {v: k for k, v in vect.vocabulary_.items()}
-    for coef in coef_pos_index[:50]:
+    for coef in coef_pos_index:
         for n in nouns:
-            if n == invert_index_vectorizer[coef[1]]:
-                if n not in positive_word:
-                    positive_word.append(n)
-                    # print(invert_index_vectorizer[coef[1]], coef[0])
-    for coef in coef_neg_index[:50]:
-         for n in nouns:
-            if n == invert_index_vectorizer[coef[1]]:
-                if n not in negative_word:
-                    negative_word.append(n)
-                    # negative_word.append(invert_index_vectorizer[coef[1]])
-                    # print(invert_index_vectorizer[coef[1]], coef[0])
-
+            try:
+                if n == invert_index_vectorizer[coef[1]]:
+                    if n not in positive_word:
+                        positive_word.append(n)
+            except KeyError:
+                pass
+    for coef in coef_neg_index: 
+        for n in nouns:
+            try:
+                if n == invert_index_vectorizer[coef[1]]:
+                    if n not in negative_word:
+                        negative_word.append(n)
+            except KeyError:
+                pass
+    print(f'[AI 분석 결과] positive_word : {positive_word}')
+    print(f'[AI 분석 결과] negative_word : {negative_word}')
     return JsonResponse({'positive_word': positive_word, 'negative_word': negative_word})
