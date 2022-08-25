@@ -192,9 +192,12 @@ export default {
       '구분': 'source'
     }    
   }), 
+  
   created () {
-    this.from_dt = this.$moment().set('month', 0).startOf('month').format('YYYY-MM-DD')
-    this.to_dt   = this.$moment().set('month', 11).endOf('month').format('YYYY-MM-DD')
+    // this.from_dt = this.$moment().set('month', 0).startOf('month').format('YYYY-MM-DD')
+    // this.to_dt   = this.$moment().set('month', 11).endOf('month').format('YYYY-MM-DD')
+    this.from_dt = new Date().toISOString().substr(0, 7) + '-01'
+    this.to_dt = new Date().toISOString().substr(0, 10)    
     this.get_reviews()
   },  
 
