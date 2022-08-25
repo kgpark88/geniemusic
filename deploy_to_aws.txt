@@ -1,0 +1,139 @@
+o https://aws.amazon.com/ 접속
+아시아 태평양 (서울) ap-northeast-2 리전 선택
+
+o VPC 생성
+- 이름 태그 - 선택 사항 : DemoVPC
+- IPv CIDR block : 10.0.0.0/16
+- 태그 - 선택사항 : Name DemoVPC
+
+o Subnet 생성
+1.
+- VPC ID : DemoVPC
+- 서브넷 이름 : PublicSubnetA
+- 가용 영역 선택 : 아시아 태평양 (서울) ap-northeast-2a
+- IPv CIDR block : 10.0.0.0/24
+- 태그 - 선택사항 : Name PublicSubnetA
+2.
+- VPC : DemoVPC
+- 서브넷 이름 : PublicSubnetB
+- 가용 영역 선택 : 아시아 태평양 (서울) ap-northeast-2b
+- IPv CIDR block : 10.0.1.0/24
+- 태그 - 선택사항 : Name PublicSubnetB
+3.
+- VPC : DemoVPC
+- 서브넷 이름 : PrivateSubnetA
+- 가용 영역 선택 선택
+- IPv CIDR block : 10.0.16.0/20
+- 태그 - 선택사항 : Name PrivateSubnetA
+4.
+- VPC : DemoVPC
+- 서브넷 이름 : PrivateSubnetB
+- 가용 영역 선택 선택
+- IPv CIDR block : 10.0.32.0/20
+- 태그 - 선택사항 : Name PrivateSubnetB
+5. 
+PublicSubnet Eidt : 퍼블릭 IPv4 주소 자동 할당 활성화 체크
+
+o Internet Gateway 생성
+- 태그 - 선택 사항 : Name DemoIGW
+
+o Route tables
+1. 
+- 이름 - 선택 사항 : PublicRouteTable
+- VPC : DemoVPC
+- 태그 : Name PublicRouteTable
+2. 
+- 이름 - 선택 사항 : PrivateRouteTable
+- VPC : DemoVPC
+- 태그 : Name PrivateRouteTable
+3. Edit routes
+0.0.0.0/0   igw-xxxxxx
+VPC에 연결 : DemoVPC
+
+o ec2 생성
+이름 : 
+OS 이미지 : ubuntu 22.04
+보안 그룹 생성(launch-wizard-x) : SSH, HTTP, HTTPs 트래픽 허용
+
+o Public 라우팅 테이블 생성
+- 이름 - 선택 사항 : PublicRouteTable
+- VPC : DemoVPC
+- 태그 : Name PublicRouteTable
+- 서브넷 연결 : PublicSubnetA, PublicSubnetB
+- 라우팅 편집 : 0.0.0.0/0  igw-xxxx
+
+o JAVA 설치
+sudo apt update -y
+sudo apt upgrade -y
+sudo apt install -y openjdk-18-jdk
+
+o pip 설치
+sudo apt install -y python3-pip
+
+o 소스 복사
+git clone https://github.com/kgpark88/review_analysis
+
+o python 패키지 설치
+pip install django
+pip install pandas
+pip install matplotlib
+pip install seaborn
+pip install django-crispy-forms
+pip install django-import-export
+pip install django-cors-headers
+pip install djangorestframework
+pip install django-rest-swagger
+pip install drf-yasg
+pip install django-markdownx
+pip install JPype1
+pip install sklearn
+pip install konlpy
+pip install git+https://github.com/haven-jeon/PyKoSpacing.git
+pip install git+https://github.com/ssut/py-hanspell.git
+pip install tensorflow
+pip install tensorflow_hub
+pip install jupyter
+pip install google_play_scraper
+pip install app-store-scraper
+
+o 서버 프로그램 실행
+cd ~/review_analysis/server
+python3 manage.py runserver 0.0.0.0:8000
+ctrl + c
+python3 manage.py runserver 0.0.0.0:8000 &
+curl http://localhost:8000
+fg
+ctrl + c
+nohup python3 manage.py runserver 0.0.0.0:8000  2>&1 &
+
+o nginx 설치
+sudo apt install nginx -y
+
+sudo systemctl enable nginx
+sudo systemctl status nginx
+
+sudo systemctl stop nginx
+sudo systemctl start nginx
+sudo systemctl restart nginx
+
+웹브라우저로 AWS EC2 공인IP에 접속 
+
+o 웹서비스 파일 생성
+개발PC frontend/.env.production 파일내용을 AWS EC2 공인IP로 수정 
+- VUE_APP_API_SERVER="http://xx.xx.xx.xx/apis"
+
+npm run build
+
+
+o 개발PC에 WinSCP 설치 
+https://winscp.net/eng/download.php
+참고 : https://bit.ly/3R1B3lE
+
+개발PC의 frontend/dist 폴더를 sftp로 서버 사용자 홈디렉토리에 업로드 
+
+o 웹서비스 파일(html, js, css) 복사
+sudo cp ~/review_analysis/frontend/nginx.conf /etc/nginx/nginx.conf
+sudo \cp -rf /home/ubuntu/dist/. /var/www/html/.
+sudo systemctl restart nginx
+
+웹브라우저로 AWS EC2 공인IP에 접속 
