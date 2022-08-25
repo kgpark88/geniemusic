@@ -50,9 +50,10 @@ o Route tables
 0.0.0.0/0   igw-xxxxxx
 VPC에 연결 : DemoVPC
 
-o ec2 생성
+o EC2 생성
 이름 : 
 OS 이미지 : ubuntu 22.04
+네트워크 설정 : DemoVPC, PrivateSubnetA, 퍼블릭 IP 자동 할당 활성화
 보안 그룹 생성(launch-wizard-x) : SSH, HTTP, HTTPs 트래픽 허용
 
 o Public 라우팅 테이블 생성
@@ -62,16 +63,32 @@ o Public 라우팅 테이블 생성
 - 서브넷 연결 : PublicSubnetA, PublicSubnetB
 - 라우팅 편집 : 0.0.0.0/0  igw-xxxx
 
+
 o JAVA 설치
 sudo apt update -y
+
 sudo apt upgrade -y
+
 sudo apt install -y openjdk-18-jdk
+
+java -version
+
+o NGINX 웹서버 설치
+sudo apt install nginx -y
+
+sudo systemctl enable nginx
+sudo systemctl status nginx
+
+sudo systemctl stop nginx
+sudo systemctl start nginx
+sudo systemctl restart nginx
+
+웹브라우저로 AWS EC2 공인IP에 접속 
+
 
 o pip 설치
 sudo apt install -y python3-pip
 
-o 소스 복사
-git clone https://github.com/kgpark88/review_analysis
 
 o python 패키지 설치
 pip install django
@@ -96,29 +113,25 @@ pip install jupyter
 pip install google_play_scraper
 pip install app-store-scraper
 
+
+o 소스 복사
+git clone https://github.com/kgpark88/review_analysis
+
+
 o 서버 프로그램 실행
 cd ~/review_analysis/server
 python3 manage.py runserver 0.0.0.0:8000
 ctrl + c
+
 python3 manage.py runserver 0.0.0.0:8000 &
 curl http://localhost:8000
 fg
 ctrl + c
+
 nohup python3 manage.py runserver 0.0.0.0:8000  2>&1 &
 
-o nginx 설치
-sudo apt install nginx -y
 
-sudo systemctl enable nginx
-sudo systemctl status nginx
-
-sudo systemctl stop nginx
-sudo systemctl start nginx
-sudo systemctl restart nginx
-
-웹브라우저로 AWS EC2 공인IP에 접속 
-
-o 웹서비스 파일 생성
+o 웹 파일(html, js, css) 생성
 개발PC frontend/.env.production 파일내용을 AWS EC2 공인IP로 수정 
 - VUE_APP_API_SERVER="http://xx.xx.xx.xx/apis"
 
