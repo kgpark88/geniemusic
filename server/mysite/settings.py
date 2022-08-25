@@ -5,7 +5,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'd&bzd8fnsb&+q5kt*4_$f!w^si%ky)k_p+4)mxj#mxx-z3x1x('
 DEBUG = True
 
-ALLOWED_HOSTS = ['localhost', '127.0.0.1', 'http://localhost:8080']
+ALLOWED_HOSTS = ['*']
 
 # Application definition
 INSTALLED_APPS = [
